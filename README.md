@@ -3,12 +3,13 @@
 
 ## Requirements
 
-Python: >= 3
-pipenv 
+- Python: >= 3
+- pipenv:
+If you don't have pipenv installed, [install it first](https://pipenv.pypa.io/en/latest/install/#pragmatic-installation-of-pipenv). 
+
 
 ## Installation
 
-If you don't have pipenv installed, [install it first](https://pipenv.pypa.io/en/latest/install/#pragmatic-installation-of-pipenv). 
 ```commandline
 pip install --user pipenv
 ```
