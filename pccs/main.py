@@ -18,7 +18,7 @@ def run():
     parser.add_argument('--policy-id', '-id', help='Get policy by ID', required=False)
     args = parser.parse_args()
 
-    base_url = os.getenv('PC_API_URL', '')
+    base_url = os.getenv('PRISMA_API_URL', '')
     username = os.getenv('PC_ACCESS_KEY', '')
     password = os.getenv('PC_SECRET_KEY', '')
 
@@ -27,7 +27,7 @@ def run():
     if base_url and username and password:
         token = auth.login(base_url, username, password)
     else:
-        print("Please set PC_API_URL, PC_ACCESS_KEY and PC_SECRET_KEY environment variables or use the --auth "
+        print("Please set PRISMA_API_URL, PC_ACCESS_KEY and PC_SECRET_KEY environment variables or use the --auth "
                       "argument")
         sys.exit(1)
     if not token:

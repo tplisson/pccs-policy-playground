@@ -37,14 +37,10 @@ tree
 ```
 
 Our new custom policy for the demo:
-```
-policies/azure/
-```
+`policies/azure/`
 
 Sample Terraform IaC files / repo
-```
-terraform/azure/
-```
+`terraform/azure/`
 
 Sample Terraform IaC
 https://github.com/tplisson/tom-github-tf-azure
@@ -95,9 +91,7 @@ python pccs/main.py -id <Policy_ID>
 ## 3. Custom Policy writing & Testing
 
 #### Writing / updating a policy
-```
-policies/azure/DEMO_NSG_POLICY.yaml
-```
+`policies/azure/DEMO_NSG_POLICY.yaml`
 
 ```yaml
 ---
@@ -128,9 +122,7 @@ definition:
 ```
 
 Sample Terraform IaC file to be scanned
-```
-terraform/azure/nsg.tf
-```
+`terraform/azure/nsg.tf`
 
 #### Using checkov to test locally 
 ```commandline
@@ -138,18 +130,18 @@ export PC_ACCESS_KEY=<KEY>
 export PC_SECRET_KEY=<SECRET>
 export PC_API_URL=https://api2.prismacloud.io
 ```
+
 ```commandline
 checkov -h
 ```
+
 ```commandline
 checkov -f <tf_file> -c <policy_id> —external-checks-dir <path-to-external-yaml-policies>
 ```
+
 ```commandline
 checkov -f terraform/azure/nsg.tf -c DEMO_NSG_POLICY.yaml --external-checks-dir policies/azure/
 ```
-
-
-
 
 
 ## 4. API: Publishing a new Policy
@@ -161,6 +153,8 @@ python pccs/main.py -p <Policy_ID>
 python pccs/main.py -p policies/azure/DEMO_NSG_POLICY.yml 
 ```
 
+> 💡 Note: Before publishing your custom policy, make sure to remove any policy ID as these are automatically assigned by Prisma Cloud Code Security
+
 ## 5. PCCS: Viewing policy violations in the UI
 
 Prisma Cloud Code Security
@@ -169,6 +163,10 @@ https://app2.prismacloud.io/projects/projects?types=Errors&repository=tplisson%2
 GitHub repositories
 https://github.com/tplisson/pccs-policy-playground/terraform/azure/  
 https://github.com/tplisson/tom-github-tf-azure/terraform/azure/  
+
+- Create a pull request in GitHub
+- View Prisma Cloud checks in GitHub
+- Open Prisma Cloud console to view more details
 
 ## 6. API: Updating an existing Policy (by ID)
 Updating an existing Policy using its ID
