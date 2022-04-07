@@ -14,7 +14,7 @@ password = os.getenv('PC_SECRET_KEY')
 def run():
     parser = argparse.ArgumentParser('Manage PCCS policies')
     parser.add_argument('--list', '-l', help='List custom policies', required=False, action='store_true')
-    parser.add_argument('--publish', '-p', help='Publish policies from file', required=False)
+    parser.add_argument('--publish', '-p', help='Publish policy from file', required=False)
     parser.add_argument('--delete', '-d', help='Delete policy by ID', required=False)
     parser.add_argument('--update', '-u', help='Update policy by ID', required=False)
     parser.add_argument('--verbose', '-v', help='Print verbose response', required=False, action='store_true', default=False)
