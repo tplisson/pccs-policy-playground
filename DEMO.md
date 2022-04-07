@@ -51,7 +51,7 @@ https://github.com/tplisson/tom-github-tf-azure
 
 Python script to list / publish / update / delete custom policies via the API
 https://github.com/kartikp10/pccs-policy-playground
-```
+```commandline
 $ python pccs/main.py -h
 usage: Manage PCCS policies [-h] [--auth AUTH] [--list] [--publish PUBLISH]
                             [--delete DELETE] [--update UPDATE] [--verbose]
@@ -78,17 +78,17 @@ optional arguments:
 ## 2. API: Listing existing Policies
 
 Listing existing policies
-```
+```commandline
 python pccs/main.py -l 
 python pccs/main.py --list
 ```
 Getting details for all existing policies
-```
+```commandline
 python pccs/main.py -l -v
 ```
 
 Getting details about an existing policies
-```
+```commandline
 python pccs/main.py -id <Policy_ID>
 ```
 
@@ -133,18 +133,18 @@ terraform/azure/nsg.tf
 ```
 
 #### Using checkov to test locally 
-```
+```commandline
 export PC_ACCESS_KEY=<KEY>
 export PC_SECRET_KEY=<SECRET>
 export PC_API_URL=https://api2.prismacloud.io
 ```
-```
+```commandline
 checkov -h
 ```
-```
+```commandline
 checkov -f <tf_file> -c <policy_id> —external-checks-dir <path-to-external-yaml-policies>
 ```
-```
+```commandline
 checkov -f terraform/azure/nsg.tf -c DEMO_NSG_POLICY.yaml --external-checks-dir policies/azure/
 ```
 
@@ -154,10 +154,10 @@ checkov -f terraform/azure/nsg.tf -c DEMO_NSG_POLICY.yaml --external-checks-dir 
 
 ## 4. API: Publishing a new Policy
 Publishing our new policy
-```
+```commandline
 python pccs/main.py -p <Policy_ID>
 ```
-```
+```commandline
 python pccs/main.py -p policies/azure/DEMO_NSG_POLICY.yml 
 ```
 
@@ -172,22 +172,22 @@ https://github.com/tplisson/tom-github-tf-azure/terraform/azure/
 
 ## 6. API: Updating an existing Policy (by ID)
 Updating an existing Policy using its ID
-```
+```commandline
 python pccs/main.py -u <Policy_ID>
 python pccs/main.py --update <Policy_ID>
 ```
 Verifying
-```
+```commandline
 python pccs/main.py -id <Policy_ID>
 ```
 
 ## 7. API: Deleting an existing Policy (by ID)
 Deleting an existing Policy using its ID
-```
+```commandline
 python pccs/main.py -d <Policy_ID>
 ```
 Verifying
-```
+```commandline
 python pccs/main.py -id <Policy_ID>
 python pccs/main.py -l
 ```
