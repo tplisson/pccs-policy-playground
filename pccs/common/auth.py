@@ -8,10 +8,8 @@ import logging
 from requests import exceptions
 
 
-def login():
-    url = "https://api0.prismacloud.io/login"
-    username = os.getenv('PC_ACCESS_KEY')
-    password = os.getenv('PC_SECRET_KEY')
+def login(base_url, username, password):
+    url = f"{base_url}/login"
 
     if username and password:
         payload = json.dumps({
