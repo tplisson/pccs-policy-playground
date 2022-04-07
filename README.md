@@ -25,7 +25,7 @@ pipenv install
 The following environment variables need to be set. 
 
 ```commandline
-export PC_API_URL=https://api.prismacloud.io
+export PRISMA_API_URL=https://api.prismacloud.io
 export PC_ACCESS_KEY=<your-access-key>
 export PC_SECRET_KEY=<your-secret-key>
 ```
