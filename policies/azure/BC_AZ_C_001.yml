@@ -4,7 +4,7 @@ metadata:
   id: "BC_AZ_C_001"
   guidelines: "Explanation of which resource_types can use which locations. " 
   category: "general"
-  severity: "info"
+  severity: "low"
 scope:
   provider: "azure" 
 definition:

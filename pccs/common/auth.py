@@ -3,7 +3,6 @@ import ssl
 import requests
 import json
 import os
-import logging
 
 from requests import exceptions
 
@@ -26,10 +25,10 @@ def login(base_url, username, password):
             response.raise_for_status()
             return res_json.get('token', '')
         except exceptions.SSLError:
-            logging.error("SSL error occurred. Please turn off VPN and retry")
-        except Exception:
-            logging.error("Failed to login. ", exc_info=True)
+            print("SSL error occurred. Please turn off VPN and retry")
+        except Exception as e:
+            print(f"Failed to login: {e}")
     else:
-        logging.error("Failed to login. Please ensure PC_ACCESS_KEY and PC_SECRET_KEY environment variables are set")
+        print("Failed to login. Please ensure PC_ACCESS_KEY and PC_SECRET_KEY environment variables are set")
     return ''
 
