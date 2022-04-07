@@ -167,8 +167,8 @@ Prisma Cloud Code Security
 https://app2.prismacloud.io/projects/projects?types=Errors&repository=tplisson%2Ftom-github-tf-azure&branch=main
 
 GitHub repositories
-https://github.com/tplisson/pccs-policy-playground/terraform/azure/
-https://github.com/tplisson/tom-github-tf-azure/terraform/azure/
+https://github.com/tplisson/pccs-policy-playground/terraform/azure/  
+https://github.com/tplisson/tom-github-tf-azure/terraform/azure/  
 
 ## 6. API: Updating an existing Policy (by ID)
 Updating an existing Policy using its ID
@@ -196,27 +196,27 @@ python pccs/main.py -l
 ## Links & references
 
 #### GitHub repositories
-https://github.com/tplisson/pccs-policy-playground
-https://github.com/tplisson/tom-github-tf-azure
+https://github.com/tplisson/pccs-policy-playground  
+https://github.com/tplisson/tom-github-tf-azure  
 
 #### Prisma Cloud Code Security
-https://app2.prismacloud.io/projects/projects?types=Errors&repository=tplisson%2Ftom-github-tf-azure&branch=main
+https://app2.prismacloud.io/projects/projects?types=Errors&repository=tplisson%2Ftom-github-tf-azure&branch=main  
 
 #### Bridgecrew Standalone
-https://www.bridgecrew.cloud/policies/create
+https://www.bridgecrew.cloud/policies/create  
 
 #### Bridgecrew Docs
 Bridgecrew custom polcies
-https://docs.bridgecrew.io/docs/yaml-format-for-custom-policies#policy-definition-component---specification
+https://docs.bridgecrew.io/docs/yaml-format-for-custom-policies#policy-definition-component---specification  
 
 #### Bridgecrew API
 Save new policy
-https://docs.bridgecrew.io/reference/savepolicy
+https://docs.bridgecrew.io/reference/savepolicy  
 
 #### Checkov
 https://www.checkov.io/
 
-Checkov custom polcies
+Checkov custom polcies  
 https://github.com/bridgecrewio/checkov/tree/master/docs/3.Custom%20Policies
 
 #### Terraform Provider
