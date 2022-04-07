@@ -213,7 +213,7 @@ https://docs.bridgecrew.io/docs/yaml-format-for-custom-policies#policy-definitio
 Save new policy
 https://docs.bridgecrew.io/reference/savepolicy
 
-####Checkov
+#### Checkov
 https://www.checkov.io/
 
 Checkov custom polcies
