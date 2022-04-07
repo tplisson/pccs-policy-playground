@@ -1,52 +1,53 @@
-# Demo: PCCS Custom Build Policy & API
+# Demo: PCCS Custom Build Policy via API
 
 ## Agenda
-* 1. Overview of demo setup
-* 2. API: Listing existing Policies
-* 3. Custom Policy writing & Testing
-    * Writing / updating a policy
-    * Using checkov to test locally 
-* 4. API: Publishing a new Policy
-* 5. PCCS: Viewing policy violations in the UI
-* 6. API: Updating existing Policies
-* 7. API: Deleting existing Policies
+1. Overview of demo setup
+2. Listing existing Policies via the API
+3. Writing / updating a custom policy
+4. Using checkov to test locally 
+4. Publishing a new Policy via the API
+5. Viewing policy violations in the PCCS UI
+6. Updating existing Policies via the API
+7. Deleting existing Policies via the API
 
 
 ## 1. Overview of Demo Setup 
 ```
-tree
-
-[...]
+.
+├── DEMO.md
+├── README.md
 ├── pccs
 │   ├── actions
-    [...]
+...
 │   │   └── policy_actions.py
 │   ├── common
-│   [...]
+...
 │   │   ├── auth.py
 │   │   └── utils.py
 │   └── main.py
 ├── policies
 │   └── azure
-│       ├── BC_AZ_C_001.yml
-│       ├── BC_AZ_C_002.yml
-│       ├── policies/DEMO_NSG_POLICY.yaml
+│       ├── CUST_LOCATIONS.yml
+│       ├── CUST_NSG_ASSOC.yml
+│       ├── DEMO_NSG_POLICY.yml
 └── terraform
     └── azure
-        └── nsg.tf
+        ├── nsg.tf
+        ├── rg.tf
+        ├── route.tf
+        └── vn.tf
 ```
+  
+    
+Our new custom policy for the demo: **`policies/azure/`**
 
-Our new custom policy for the demo:
-`policies/azure/`
+Sample Terraform IaC folder: **`terraform/azure/`**
 
-Sample Terraform IaC files / repo
-`terraform/azure/`
+Sample Terraform IaC repo: **`https://github.com/tplisson/tom-github-tf-azure`**
 
-Sample Terraform IaC
-https://github.com/tplisson/tom-github-tf-azure
+Python script to list / publish / update / delete custom policies via the API:
+**`https://github.com/kartikp10/pccs-policy-playground`**  
 
-Python script to list / publish / update / delete custom policies via the API
-https://github.com/kartikp10/pccs-policy-playground
 ```commandline
 $ python pccs/main.py -h
 usage: Manage PCCS policies [-h] [--auth AUTH] [--list] [--publish PUBLISH]
@@ -71,7 +72,7 @@ optional arguments:
 ```
 
 
-## 2. API: Listing existing Policies
+## 2. Listing existing Policies via the API
 
 Listing existing policies
 ```commandline
@@ -88,9 +89,9 @@ Getting details about an existing policies
 python pccs/main.py -id <Policy_ID>
 ```
 
-## 3. Custom Policy writing & Testing
+## 3. Writing / updating a custom policy
 
-#### Writing / updating a policy
+Writing / updating a policy
 `policies/azure/DEMO_NSG_POLICY.yaml`
 
 ```yaml
@@ -122,13 +123,14 @@ definition:
 ```
 
 Sample Terraform IaC file to be scanned
-`terraform/azure/nsg.tf`
+`terraform/azure/nsg.tf`  
 
-#### Using checkov to test locally 
+
+## 3. Using checkov to test locally 
 ```commandline
 export PC_ACCESS_KEY=<KEY>
 export PC_SECRET_KEY=<SECRET>
-export PC_API_URL=https://api2.prismacloud.io
+export PRISMA_API_URL=https://api2.prismacloud.io
 ```
 
 ```commandline
@@ -137,14 +139,26 @@ checkov -h
 
 ```commandline
 checkov -f <tf_file> -c <policy_id> —external-checks-dir <path-to-external-yaml-policies>
+checkov -d <tf_directory> -c <policy_id> —external-checks-dir <path-to-external-yaml-policies>
 ```
 
+Scanning `nsg.tf` file for new policy
 ```commandline
 checkov -f terraform/azure/nsg.tf -c DEMO_NSG_POLICY.yaml --external-checks-dir policies/azure/
 ```
 
+Scanning entire directory for one policy
+```
+checkov -d terraform/azure/ --external-checks-dir policies/azure/ -c DEMO_NSG_POLICY.yaml
+```
 
-## 4. API: Publishing a new Policy
+Scanning entire directory for all policies
+```
+checkov -d terraform/azure/ --external-checks-dir policies/azure/
+```
+
+
+## 4. Publishing a new Policy via the API
 Publishing our new policy
 ```commandline
 python pccs/main.py -p <Policy_ID>
@@ -153,12 +167,14 @@ python pccs/main.py -p <Policy_ID>
 python pccs/main.py -p policies/azure/DEMO_NSG_POLICY.yml 
 ```
 
-> 💡 Note: Before publishing your custom policy, make sure to remove any policy ID as these are automatically assigned by Prisma Cloud Code Security
+> 💡 *Note: Before publishing your custom policy, make sure to remove any policy ID as these are automatically assigned by Prisma Cloud Code Security*
 
-## 5. PCCS: Viewing policy violations in the UI
+## 5. Viewing policy violations in the PCCS UI
 
 Prisma Cloud Code Security
 https://app2.prismacloud.io/projects/projects?types=Errors&repository=tplisson%2Ftom-github-tf-azure&branch=main
+
+
 
 GitHub repositories
 https://github.com/tplisson/pccs-policy-playground/terraform/azure/  
@@ -183,11 +199,12 @@ python pccs/main.py -id <Policy_ID>
 Deleting an existing Policy using its ID
 ```commandline
 python pccs/main.py -d <Policy_ID>
+python pccs/main.py --delete <Policy_ID>
 ```
 Verifying
 ```commandline
 python pccs/main.py -id <Policy_ID>
-python pccs/main.py -l
+python pccs/main.py --list
 ```
 
 ---

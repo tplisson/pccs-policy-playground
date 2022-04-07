@@ -22,7 +22,7 @@ def run():
     username = os.getenv('PC_ACCESS_KEY', '')
     password = os.getenv('PC_SECRET_KEY', '')
 
-    if args.auth:``
+    if args.auth:
         base_url, username, password = [i for i in args.auth.split("::")]
     if base_url and username and password:
         token = auth.login(base_url, username, password)

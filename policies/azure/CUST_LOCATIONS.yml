@@ -15,4 +15,4 @@ definition:
     attribute: "location"
     operator: "within"
     value:
-      - "West US"    
+      - "Canada Central"    

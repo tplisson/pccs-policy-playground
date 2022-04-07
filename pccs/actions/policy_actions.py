@@ -25,10 +25,10 @@ def get_custom_policies(base_url, token, verbose=False):
         else:
             print(f'Found {len(res_json.get("data"))} custom policies\n')
             print("Policy ID:\t\t\t\tTitle")
-            print('----------------------------------------------------------------------------------------')
+            print('--------------------------------------------------------------------------------------------------')
             for p in res_json.get("data"):
                 print(f'{p.get("id")}:\t{p.get("title")}')
-            print('----------------------------------------------------------------------------------------')
+            print('--------------------------------------------------------------------------------------------------')
 
     except exceptions.SSLError:
         print("SSL error occurred. Please disable VPN and try again.")
