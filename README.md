@@ -29,13 +29,13 @@ export PC_API_URL=https://api.prismacloud.io
 export PC_ACCESS_KEY=<your-access-key>
 export PC_SECRET_KEY=<your-secret-key>
 ```
-Alternatively, you can pass them as a command line argument like below:
+Alternatively, you can pass them as a command line argument in addition to other arguments:
 
 ```commandline
-python pccs/main.py --auth "https://api.prismacloud.io::<your-access-key>::<your-secret-key>"
+python pccs/main.py --auth "https://api.prismacloud.io::<your-access-key>::<your-secret-key>" --list <any additinoal args>
 ```
 
-> Note: You may need to run off VPN for using these scripts.
+> 💡 Note: You may need to run off VPN for using these scripts.
 
 ### List custom policies
 
