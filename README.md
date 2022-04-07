@@ -35,7 +35,7 @@ Alternatively, you can pass them as a command line argument in addition to other
 python pccs/main.py --auth "https://api.prismacloud.io::<your-access-key>::<your-secret-key>" --list <any additinoal args>
 ```
 
-> 💡 Note: You may need to run off VPN for using these scripts.
+> 💡 Note: You may need to turn off VPN for using these scripts.
 
 ### List custom policies
 

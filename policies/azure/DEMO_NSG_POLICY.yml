@@ -1,0 +1,25 @@
+---
+metadata:
+  name: "DEMO-NSG-POLICY: Ensure subnet is associated with NSG"  
+  id: "DEMO_NSG_POLICY"
+  guidelines: |
+    Every subnet should be associated with NSG for controlling access to 
+    resources within the subnet.
+  category: "networking"
+  severity: "high"
+scope:
+  provider: "azure" 
+definition:
+  and:
+  - cond_type: "connection"
+    resource_types:
+    - "azurerm_subnet_network_security_group_association"
+    connected_resource_types: 
+    - "azurerm_subnet"
+    - "azurerm_network_security_group"
+    operator: "exists"
+  - cond_type: "filter"
+    attribute: "resource_type"
+    value:
+    - "azurerm_subnet"
+    operator: "within"
