@@ -1,7 +1,7 @@
 ---
 metadata:
-  name: "Ensure subnet is associated with NSG"
-  id: "BC_AZ_C_002"
+  name: "CUST-NSG: Ensure subnet is associated with NSG"
+  id: "CUST_NSG"
   guidelines: |
     Every subnet should be associated with NSG for controlling access to 
     resources within the subnet.

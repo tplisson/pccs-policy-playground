@@ -1,7 +1,7 @@
 ---
 metadata:
-  name: "Ensure resources are only created in permitted locations"  
-  id: "BC_AZ_C_001"
+  name: "CUST-LOC: Ensure resources are only created in permitted locations"  
+  id: "CUST_LOC"
   guidelines: "Explanation of which resource_types can use which locations. " 
   category: "general"
   severity: "low"
@@ -15,4 +15,4 @@ definition:
     attribute: "location"
     operator: "within"
     value:
-      - "Canada Central"    
+      - "Canada Central"

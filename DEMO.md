@@ -76,8 +76,8 @@ optional arguments:
 
 Listing existing policies
 ```commandline
-python pccs/main.py -l 
 python pccs/main.py --list
+python pccs/main.py -l 
 ```
 Getting details for all existing policies
 ```commandline
@@ -161,6 +161,7 @@ checkov -d terraform/azure/ --external-checks-dir policies/azure/
 ## 4. Publishing a new Policy via the API
 Publishing our new policy
 ```commandline
+python pccs/main.py --publish <Policy_ID>
 python pccs/main.py -p <Policy_ID>
 ```
 ```commandline
