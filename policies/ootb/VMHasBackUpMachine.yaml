@@ -16,4 +16,3 @@ definition:
       value:
         - azurerm_virtual_machine
       operator: within
-

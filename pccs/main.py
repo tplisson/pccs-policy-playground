@@ -16,6 +16,8 @@ def run():
     parser.add_argument('--update', '-u', help='Update policy by ID from file', required=False)
     parser.add_argument('--verbose', '-v', help='Print verbose response', required=False, action='store_true', default=False)
     parser.add_argument('--policy-id', '-id', help='Get policy by ID', required=False)
+    parser.add_argument('--get-suppressions', '-g', help='List suppressions', required=False, action='store_true')
+    parser.add_argument('--suppress', '-s', help='Add a suppression by Policy ID', required=False)
     args = parser.parse_args()
 
     base_url = os.getenv('PRISMA_API_URL', '')
@@ -39,6 +41,8 @@ def run():
     if args.policy_id:
         if args.update:
             policy_actions.update_custom_policy_by_id(base_url, token, args.policy_id, args.update)
+        if args.suppress:
+            policy_actions.suppress_custom_policy_by_id(base_url, token, args.policy_id, args.suppress)
         else:
             policy_actions.get_custom_policy_by_id(base_url, token, args.policy_id, args.verbose)
 
@@ -47,6 +51,15 @@ def run():
 
     if args.delete:
         policy_actions.delete_custom_policy_by_id(base_url, token, args.delete)
+
+    if args.get_suppressions:
+        policy_actions.get_suppressions(base_url, token, args.verbose)
+
+    if args.suppress:
+        policy_actions.suppress_custom_policy_by_id(base_url, token,  args.policy_id, args.comment, args.suppress)
+
+    if args.comment:
+        policy_actions.suppress_custom_policy_by_id(base_url, token, args.policy_id, args.comment, args.suppress)
 
 
 if __name__ == '__main__':

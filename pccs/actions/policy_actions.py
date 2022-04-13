@@ -23,7 +23,7 @@ def get_custom_policies(base_url, token, verbose=False):
                 p.pop("accountsData")
             print(json.dumps(res_json.get("data"), indent=4))
         else:
-            print(f'Found {len(res_json.get("data"))} custom policies\n')
+            print(f'Found {len(res_json.get("data"))} custom policie(s)\n')
             print("Policy ID:\t\t\t\tTitle")
             print('--------------------------------------------------------------------------------------------------')
             for p in res_json.get("data"):
@@ -113,6 +113,76 @@ def update_custom_policy_by_id(base_url, token, policy_id, file_path, verbose=Fa
     except Exception as e:
         print(f"Error occurred while publishing policy: {e}")
         sys.exit(1)
+
+
+# def suppress_custom_policy_by_id(base_url, token, policy_id, comment, verbose=False):
+
+#### Trying to check for existing suppression per policy ID first but not completed... 
+
+#     try:
+#         url = f"{base_url}/bridgecrew/api/v1/suppressions"
+#         headers = {
+#             'Accept': 'application/json; charset=UTF-8',
+#             'x-redlock-auth': token
+#         }
+#         try:
+#         response = requests.request("GET", url, headers=headers)
+#         response.raise_for_status()
+#         res_json = json.loads(response.text)
+#         for p in res_json:
+#             if pid = {p.get("policyId")}:
+#                 print("Suppression for policy: {policy_id} already exists")
+#             else:
+
+#### Trying to check for existing suppression per policy ID first but not completed... 
+
+#         url = f"{base_url}/bridgecrew/api/v1/suppressions/{policy_id}"
+#         headers = {
+#             'Accept': 'application/json; charset=UTF-8',
+#             'Content-Type': 'application/json',
+#             'x-redlock-auth': token
+#         }
+#         payload = {
+#             "expirationTime": 1672549199,
+#             "origin": "Platform",
+#             "suppressionType": "Policy",
+#             "comment": {comment}
+#         }
+#         try:
+#             response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+#             res_json = json.loads(response.text)
+#             print(json.dumps(res_json, indent=4))
+#             response.raise_for_status()
+#             print("Suppression added successfully.")
+#         except exceptions.SSLError:
+#             print("SSL error occurred. Please disable VPN and try again.")
+#             sys.exit(1)
+#         except Exception as e:
+#             print(f"Error occurred while adding suppression: {e}")
+#             sys.exit(1)
+
+
+def get_suppressions(base_url, token, verbose=False):
+    url = f"{base_url}/bridgecrew/api/v1/suppressions"
+    headers = {
+        'Accept': 'application/json; charset=UTF-8',
+        'x-redlock-auth': token
+    }
+    try:
+        response = requests.request("GET", url, headers=headers)
+        response.raise_for_status()
+        res_json = json.loads(response.text)
+        print(f'Found {len(res_json)} suppression(s)\n')
+        print("Type:\tPolicy Id:\t\t\t\tComment:")
+        print('--------------------------------------------------------------------------------------------------')
+        for p in res_json:
+            print(f'{p.get("suppressionType")}\t{p.get("policyId")}\t{p.get("comment")}')
+        print('--------------------------------------------------------------------------------------------------')
+
+    except exceptions.SSLError:
+        print("SSL error occurred. Please disable VPN and try again.")
+    except Exception as e:
+        print(f"Error occurred while listing suppressions: {e}")
 
 
 def get_policy_payload(file_path):
