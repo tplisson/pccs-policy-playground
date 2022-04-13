@@ -5,10 +5,10 @@
 2. Listing existing Policies via the API
 3. Writing / updating a custom policy
 4. Using checkov to test locally 
-4. Publishing a new Policy via the API
-5. Viewing policy violations in the PCCS UI
-6. Updating existing Policies via the API
-7. Deleting existing Policies via the API
+5. Publishing a new Policy via the API
+6. Viewing policy violations in the PCCS UI
+7. Updating existing Policies via the API
+8. Deleting existing Policies via the API
 
 
 ## 1. Overview of Demo Setup 
@@ -126,7 +126,7 @@ Sample Terraform IaC file to be scanned
 `terraform/azure/nsg.tf`  
 
 
-## 3. Using checkov to test locally 
+## 4. Using checkov to test locally 
 ```commandline
 export PC_ACCESS_KEY=<KEY>
 export PC_SECRET_KEY=<SECRET>
@@ -158,7 +158,7 @@ checkov -d terraform/azure/ --external-checks-dir policies/azure/
 ```
 
 
-## 4. Publishing a new Policy via the API
+## 5. Publishing a new Policy via the API
 Publishing our new policy
 ```commandline
 python pccs/main.py --publish <Policy_ID>
@@ -170,7 +170,7 @@ python pccs/main.py -p policies/azure/DEMO_NSG_POLICY.yml
 
 > 💡 *Note: Before publishing your custom policy, make sure to remove any policy ID as these are automatically assigned by Prisma Cloud Code Security*
 
-## 5. Viewing policy violations in the PCCS UI
+## 6. Viewing policy violations in the PCCS UI
 
 Prisma Cloud Code Security
 https://app2.prismacloud.io/projects/projects?types=Errors&repository=tplisson%2Ftom-github-tf-azure&branch=main
@@ -185,7 +185,7 @@ https://github.com/tplisson/tom-github-tf-azure/terraform/azure/
 - View Prisma Cloud checks in GitHub
 - Open Prisma Cloud console to view more details
 
-## 6. API: Updating an existing Policy (by ID)
+## 7. API: Updating an existing Policy (by ID)
 Updating an existing Policy using its ID
 ```commandline
 python pccs/main.py -u <Policy_ID>
@@ -196,7 +196,7 @@ Verifying
 python pccs/main.py -id <Policy_ID>
 ```
 
-## 7. API: Deleting an existing Policy (by ID)
+## 8. API: Deleting an existing Policy (by ID)
 Deleting an existing Policy using its ID
 ```commandline
 python pccs/main.py -d <Policy_ID>

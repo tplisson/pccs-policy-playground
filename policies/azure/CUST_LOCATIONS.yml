@@ -8,11 +8,18 @@ metadata:
 scope:
   provider: "azure" 
 definition:
- or:
+ and:
   - cond_type: "attribute"
     resource_types:
-    - "all"
+    - "azurerm_resource_group"
     attribute: "location"
     operator: "within"
     value:
       - "Canada Central"
+      - "Canada East"
+      - "East US 2"
+      - "Central US"
+      - "Japan East"
+      - "Japan West"
+      - "East Asia"
+      - "Southeast Asia"
