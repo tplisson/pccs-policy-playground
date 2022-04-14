@@ -1,4 +1,4 @@
-### checkov -f terraform/ml/01-rg.tf --external-checks-dir policies/ml/ -c ML01 > tests/01-test-results.log
+### checkov -f terraform/ml/ML01-rg.tf --external-checks-dir policies/ml/ -c ML01 > tests/ML01-test-results.log
 
        _               _              
    ___| |__   ___  ___| | _______   __

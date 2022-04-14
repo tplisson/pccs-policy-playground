@@ -1,4 +1,4 @@
-ckv -f terraform/ml/03-nsg.tf --external-checks-dir policies/ml -c ML03 > tests/03-test-results.log
+ckv -f terraform/ml/ML03-nsg.tf --external-checks-dir policies/ml -c ML03 > tests/ML03-test-results.log
 
 
 
