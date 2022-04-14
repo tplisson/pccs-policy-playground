@@ -1,0 +1,18 @@
+---
+metadata:
+  name: "Ensure resources are only created in permitted locations"  
+  id: "BC_AZ_C_001"
+  guidelines: "Explanation of which resource_types can use which locations. " 
+  category: "general"
+  severity: "low"
+scope:
+  provider: "azure" 
+definition:
+ or:
+  - cond_type: "attribute"
+    resource_types:
+    - "all"
+    attribute: "location"
+    operator: "within"
+    value:
+      - "West US"    

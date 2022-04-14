@@ -197,4 +197,3 @@ def get_policy_payload(file_path):
               f"publishing.")
         policy_data["metadata"].pop("id", None)
     return {"code": policy_data}
-

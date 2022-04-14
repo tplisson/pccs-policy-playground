@@ -23,7 +23,7 @@ def run():
 
     base_url = os.getenv('PRISMA_API_URL', '')
     username = os.getenv('PC_ACCESS_KEY', '')
-    password = os.getenv('PC_SECRET_KEY', '')
+    password = os.getenv('PC_SECRET_KEY', '') 
 
     if args.auth:
         base_url, username, password = [i for i in args.auth.split("::")]
