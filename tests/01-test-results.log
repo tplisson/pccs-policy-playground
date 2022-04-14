@@ -1,0 +1,27 @@
+### checkov -f terraform/ml/01-rg.tf --external-checks-dir policies/ml/ -c ML01 > tests/01-test-results.log
+
+       _               _              
+   ___| |__   ___  ___| | _______   __
+  / __| '_ \ / _ \/ __| |/ / _ \ \ / /
+ | (__| | | |  __/ (__|   < (_) \ V / 
+  \___|_| |_|\___|\___|_|\_\___/ \_/  
+                                      
+By bridgecrew.io | version: 2.0.1065 
+
+terraform scan results:
+
+Passed checks: 1, Failed checks: 1, Skipped checks: 0
+
+Check: ML01: "ML01 Manulife Policy - Ensure resources are only created in permitted locations"
+	PASSED for resource: azurerm_resource_group.good
+	File: /01-rg.tf:2-5
+Check: ML01: "ML01 Manulife Policy - Ensure resources are only created in permitted locations"
+	FAILED for resource: azurerm_resource_group.bad
+	File: /01-rg.tf:8-11
+
+		8  | resource "azurerm_resource_group" "bad" {
+		9  |   name     = "resource-group-in-bad-location"
+		10 |   location = "West Europe" 
+		11 | }
+
+

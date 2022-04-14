@@ -1,8 +1,8 @@
 ---
 metadata:
-  name: "CUST-LOC: Ensure resources are only created in permitted locations"  
-  id: "CUST_LOC"
-  guidelines: "Explanation of which resource_types can use which locations. " 
+  name: "Manulife Policy ML01 - Ensure resources are only created in permitted locations"  
+  id: "ML01"
+  guidelines: "Ensure resources are only created in permitted locations" 
   category: "general"
   severity: "low"
 scope:
@@ -12,6 +12,7 @@ definition:
   - cond_type: "attribute"
     resource_types:
     - "azurerm_resource_group"
+    # - "azurerm_virtual_network"
     attribute: "location"
     operator: "within"
     value:

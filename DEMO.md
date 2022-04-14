@@ -86,6 +86,7 @@ python pccs/main.py -l -v
 
 Getting details about an existing policies
 ```commandline
+python pccs/main.py --policy-id <Policy_ID>
 python pccs/main.py -id <Policy_ID>
 ```
 
@@ -98,7 +99,7 @@ Writing / updating a policy
 ---
 metadata:
   name: "DEMO-NSG: Ensure subnet is associated with NSG"  
-  #id: "DEMO_NSG_POLICY"
+  id: "DEMO_NSG_POLICY"
   guidelines: |
     Every subnet should be associated with NSG for controlling access to 
     resources within the subnet.
@@ -134,12 +135,16 @@ export PRISMA_API_URL=https://api2.prismacloud.io
 ```
 
 ```commandline
+checkov --help
 checkov -h
 ```
 
 ```commandline
-checkov -f <tf_file> -c <policy_id> —external-checks-dir <path-to-external-yaml-policies>
-checkov -d <tf_directory> -c <policy_id> —external-checks-dir <path-to-external-yaml-policies>
+checkov --file <tf_file> --check <policy_id> --external-checks-dir <path_to_external_yaml_policies>
+checkov -f <tf_file> -c <policy_id> --external-checks-dir <path_to_external_yaml_policies>
+
+checkov --directory <tf_folder> --check <policy_id> --external-checks-dir <path_to_external_yaml_policies>
+checkov -d <tf_directory> -c <policy_id> --external-checks-dir <path_to_external_yaml_policies>
 ```
 
 Scanning `nsg.tf` file for new policy
@@ -161,8 +166,8 @@ checkov -d terraform/azure/ --external-checks-dir policies/azure/
 ## 5. Publishing a new Policy via the API
 Publishing our new policy
 ```commandline
-python pccs/main.py --publish <Policy_ID>
-python pccs/main.py -p <Policy_ID>
+python pccs/main.py --publish <path/policy_filename>
+python pccs/main.py -p <path/policy_filename>
 ```
 ```commandline
 python pccs/main.py -p policies/azure/DEMO_NSG_POLICY.yml 
@@ -186,26 +191,46 @@ https://github.com/tplisson/tom-github-tf-azure/terraform/azure/
 - Open Prisma Cloud console to view more details
 
 ## 7. API: Updating an existing Policy (by ID)
+
 Updating an existing Policy using its ID
 ```commandline
-python pccs/main.py -u <Policy_ID>
 python pccs/main.py --update <Policy_ID>
+python pccs/main.py -u <Policy_ID>
 ```
 Verifying
 ```commandline
 python pccs/main.py -id <Policy_ID>
 ```
 
+Example  
+```
+python pccs/main.py -l                                
+Found 1 custom policies
+
+Policy ID:                              Title:
+--------------------------------------------------------------------------------------------------
+806775482162247680_AZR_1649865768422    DEMO-NSG: Ensure subnet is associated with NSG
+--------------------------------------------------------------------------------------------------
+
+% python pccs/main.py -d 806775482162247680_AZR_1649865768422
+{
+    "policy": "806775482162247680_AZR_1649865768422"
+}
+Deleted successfully.
+```
+
+
+
 ## 8. API: Deleting an existing Policy (by ID)
 Deleting an existing Policy using its ID
 ```commandline
-python pccs/main.py -d <Policy_ID>
 python pccs/main.py --delete <Policy_ID>
+python pccs/main.py -d <Policy_ID>
 ```
 Verifying
 ```commandline
-python pccs/main.py -id <Policy_ID>
 python pccs/main.py --list
+python pccs/main.py -id <Policy_ID>
 ```
 
 ---
@@ -223,19 +248,22 @@ https://www.bridgecrew.cloud/policies/create
 
 #### Bridgecrew Docs
 Bridgecrew custom polcies
-https://docs.bridgecrew.io/docs/yaml-format-for-custom-policies#policy-definition-component---specification  
+https://docs.bridgecrew.io/docs/yaml-format-for-custom-policies
 
 #### Bridgecrew API
 Save new policy
 https://docs.bridgecrew.io/reference/savepolicy  
 
+List policies
+https://docs.bridgecrew.io/reference/getcustompoliciestable
+
 #### Checkov
 https://www.checkov.io/
 
-Checkov custom polcies  
+Checkov custom policies  
 https://github.com/bridgecrewio/checkov/tree/master/docs/3.Custom%20Policies
 
-#### Terraform Provider
+#### Terraform Provider for Azure RM
 Azure Terraform Provider
 https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs
 
