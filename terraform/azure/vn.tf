@@ -1,7 +1,7 @@
 resource "azurerm_resource_group" "rgb" { 
   name     = "example-resources"
   location = "Central US"
-"
+}
 
 resource "azurerm_network_security_group" "nsg" {
   name                = "example-security-group"
