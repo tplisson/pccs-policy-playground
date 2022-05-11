@@ -2,7 +2,6 @@ import json
 import sys
 import requests
 import yaml
-import re
 
 from requests import exceptions
 from pathlib import Path
@@ -67,7 +66,7 @@ def get_policy_filters(base_url, token):
         print(f"Error occurred while listing policies: {e}")
 
 
-def get_custom_policy_by_id(base_url, token, policy_id, bc_proxy=False ,verbose=False):
+def get_custom_policy_by_id(base_url, token, policy_id, bc_proxy=False):
     """
     Get policy by ID: https://prisma.pan.dev/api/cloud/cspm/policy#operation/get-policy
     """
@@ -91,27 +90,22 @@ def get_custom_policy_by_id(base_url, token, policy_id, bc_proxy=False ,verbose=
         print(f"Error occurred while listing policies: {e}")
 
 
-def create_custom_policy(base_url, token, file_path, bc_proxy=False, verbose=False):
+def create_custom_policy(base_url, token, file_path, bc_proxy=False, status=False):
     """
     Creates a new build policy: https://prisma.pan.dev/api/cloud/cspm/policy#operation/add-policy
     """
     headers = auth.get_auth_headers(token, True)
-    payload = get_policy_payload(file_path)
+    payload = get_policy_payload(file_path, bc_proxy, status)
     try:
         if bc_proxy:
             url = f"{base_url}/bridgecrew/api/v1/policies"
-            response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
-            res_json = json.loads(response.text)
-            print(json.dumps(res_json, indent=4))
-            response.raise_for_status()
-            print("Policy published successfully.")
         else:
             url = f"{base_url}/policy"
-            response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
-            res_json = json.loads(response.text)
-            print(json.dumps(res_json, indent=4))
-            response.raise_for_status()
-            print("Policy published successfully.")
+        response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+        res_json = json.loads(response.text)
+        print(json.dumps(res_json, indent=4))
+        response.raise_for_status()
+        print("Policy published successfully.")
     except exceptions.SSLError:
         print("SSL error occurred. Please disable VPN and try again.")
         sys.exit(1)
@@ -120,19 +114,23 @@ def create_custom_policy(base_url, token, file_path, bc_proxy=False, verbose=Fal
         sys.exit(1)
 
 
-def delete_custom_policy_by_id(base_url, token, policy_id, verbose=False):
-    url = f"{base_url}/bridgecrew/api/v1/policies/{policy_id}"
+def delete_custom_policy_by_id(base_url, token, policy_id, bc_proxy=False):
     headers = auth.get_auth_headers(token)
     try:
+        if bc_proxy:
+            url = f"{base_url}/bridgecrew/api/v1/policies/{policy_id}"
+        else:
+            url = f"{base_url}/policy/{policy_id}"
         response = requests.request("DELETE", url, headers=headers)
         response.raise_for_status()
-        res_json = json.loads(response.text)
-        print(json.dumps(res_json, indent=4))
+        if response.text:
+            res_json = json.loads(response.text)
+            print(json.dumps(res_json, indent=4))
         print("Deleted successfully.")
     except exceptions.SSLError:
         print("SSL error occurred. Please disable VPN and try again.")
     except Exception as e:
-        print(f"Error occurred while listing policies: {e}")
+        print(f"Error occurred while deleting policy: {e}")
 
 
 def update_custom_policy_by_id(base_url, token, policy_id, file_path, bc_proxy=False, verbose=False):
@@ -157,7 +155,7 @@ def update_custom_policy_by_id(base_url, token, policy_id, file_path, bc_proxy=F
         sys.exit(1)
 
 
-def get_policy_payload(file_path, bc_proxy=False):
+def get_policy_payload(file_path, bc_proxy, status):
     path = Path(file_path).resolve()
     try:
         with open(path, "r") as stream:
@@ -208,7 +206,7 @@ def get_policy_payload(file_path, bc_proxy=False):
                 "type": "Config"
             },
             "severity": policy_data['metadata']['severity'],
-            "enabled": False
+            "enabled": status
         }
         return payload
 

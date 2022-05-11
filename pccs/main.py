@@ -13,7 +13,7 @@ def run():
                         required=False)
     parser.add_argument('--list', '-l', help='List custom policies', required=False, action='store_true')
     parser.add_argument('--publish', '-p', help='Publish policy from file', required=False)
-    parser.add_argument('--delete', '-d', help='Delete policy by ID', required=False)
+    parser.add_argument('--delete', '-d', help='Delete policy by ID', required=False, action='store_true')
     parser.add_argument('--update', '-u', help='Update policy by ID from file', required=False)
     parser.add_argument('--verbose', '-v', help='Print verbose response', required=False, action='store_true',
                         default=False)
@@ -29,6 +29,8 @@ def run():
     parser.add_argument('--query', '-q', help='Query string format key1=value1,key2=value2', default='', required=False)
     parser.add_argument('--bc-proxy', '-bc', help="Use Bridgecrew API proxy (not recommended)", action='store_true',
                         default=False, required=False)
+    parser.add_argument('--enable', help="Enable policy", action='store_true', required=False, default=False)
+    parser.add_argument('--disable', help="Disable policy", action='store_true', required=False, default=True)
     parser.add_argument('--version', action='version', version='2.0')
     args = parser.parse_args()
 
@@ -47,20 +49,26 @@ def run():
     if not token:
         sys.exit(1)
 
+    # status of policy - True implies enabled and False implies disabled.
+    status = args.enable or not args.disable
+
     if args.query:
         args.query = utils.parse_query_string(args.query)
 
     if args.list:
         if args.policy_id:
-            policy_actions.get_custom_policy_by_id(base_url, token, args.policy_id, args.bc_proxy, args.verbose)
+            policy_actions.get_custom_policy_by_id(base_url, token, args.policy_id, args.bc_proxy)
         else:
             policy_actions.get_custom_policies(base_url, token, args.query, args.bc_proxy, args.verbose)
+
+    if args.publish:
+        policy_actions.create_custom_policy(base_url, token, args.publish, args.bc_proxy, status)
 
     if args.update and args.policy_id:
         policy_actions.update_custom_policy_by_id(base_url, token, args.policy_id, args.update)
 
-    if args.publish:
-        policy_actions.create_custom_policy(base_url, token, args.publish, args.bc_proxy)
+    if args.delete and args.policy_id:
+        policy_actions.delete_custom_policy_by_id(base_url, token, args.policy_id, args.bc_proxy)
 
     # TODO:
     # if args.delete:
