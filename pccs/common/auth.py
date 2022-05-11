@@ -1,8 +1,5 @@
-import ssl
-
 import requests
 import json
-import os
 
 from requests import exceptions
 
@@ -31,4 +28,15 @@ def login(base_url, username, password):
     else:
         print("Failed to login. Please ensure PC_ACCESS_KEY and PC_SECRET_KEY environment variables are set")
     return ''
+
+
+def get_auth_headers(token, content_type=False):
+    return {
+        'Accept': 'application/json; charset=UTF-8',
+        'x-redlock-auth': token
+    } if not content_type else {
+        'Accept': 'application/json; charset=UTF-8',
+        'x-redlock-auth': token,
+        'Content-Type': 'application/json'
+    }
 

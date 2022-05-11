@@ -8,39 +8,54 @@ from requests import exceptions
 from pathlib import Path
 from tabulate import tabulate
 
+from pccs.common import auth
 
-def get_custom_policies(base_url, token, verbose=False):
-    url = f"{base_url}/bridgecrew/api/v1/policies/table/data"
-    headers = {
-        'Accept': 'application/json; charset=UTF-8',
-        'x-redlock-auth': token
-    }
+
+def get_custom_policies(base_url, token, query, bc_proxy=False, verbose=False):
+    """
+    List policies: https://prisma.pan.dev/api/cloud/cspm/policy#operation/get-policies-v2
+    """
+    headers = auth.get_auth_headers(token)
     try:
-        response = requests.request("GET", url, headers=headers)
-        response.raise_for_status()
-        res_json = json.loads(response.text)
-        if verbose:
-            # remove accountsData key
-            for p in res_json.get("data"):
-                p.pop("accountsData")
-            print(json.dumps(res_json.get("data"), indent=4))
+        if bc_proxy:
+            url = f"{base_url}/bridgecrew/api/v1/policies/table/data"
+            response = requests.request("GET", url, headers=headers)
+            response.raise_for_status()
+            res_json = json.loads(response.text)
+            if verbose:
+                # remove accountsData key
+                for p in res_json.get("data"):
+                    p.pop("accountsData")
+                print(json.dumps(res_json.get("data"), indent=4))
+            else:
+                print(f'Found {len(res_json.get("data"))} custom policies\n')
+                print("Policy ID: Title")
+                for p in res_json.get("data"):
+                    print(f'{p.get("id")}: {p.get("title")}')
         else:
-            print(f'Found {len(res_json.get("data"))} custom policies\n')
-            print("Policy ID: Title")
-            for p in res_json.get("data"):
-                print(f'{p.get("id")}: {p.get("title")}')
+            url = f"{base_url}/v2/policy"
+            response = requests.request("GET", url, headers=headers, params=json.loads(json.dumps(query)))
+            response.raise_for_status()
+            res_json = json.loads(response.text)
+            if verbose:
+                print(json.dumps(res_json, indent=4))
+            else:
+                print(f'Found {len(res_json)} custom policies\n')
+                print(f'PolicyId: Name')
+                for p in res_json:
+                    print(f'{p.get("policyId")}: {p.get("name")}')
     except exceptions.SSLError:
         print("SSL error occurred. Please disable VPN and try again.")
     except Exception as e:
         print(f"Error occurred while listing policies: {e}")
 
 
-def get_custom_policy_by_id(base_url, token, policy_id, verbose=False):
-    url = f"{base_url}/bridgecrew/api/v1/policies/{policy_id}"
-    headers = {
-        'Accept': 'application/json; charset=UTF-8',
-        'x-redlock-auth': token
-    }
+def get_policy_filters(base_url, token):
+    """
+    List available policy filters: https://prisma.pan.dev/api/cloud/cspm/policy#operation/get-policy-filters-and-options
+    """
+    url = f"{base_url}/filter/policy/suggest"
+    headers = auth.get_auth_headers(token)
     try:
         response = requests.request("GET", url, headers=headers)
         response.raise_for_status()
@@ -52,20 +67,51 @@ def get_custom_policy_by_id(base_url, token, policy_id, verbose=False):
         print(f"Error occurred while listing policies: {e}")
 
 
-def create_custom_policy(base_url, token, file_path, verbose=False):
-    url = f"{base_url}/bridgecrew/api/v1/policies"
-    headers = {
-        'Accept': 'application/json; charset=UTF-8',
-        'Content-Type': 'application/json',
-        'x-redlock-auth': token
-    }
+def get_custom_policy_by_id(base_url, token, policy_id, bc_proxy=False ,verbose=False):
+    """
+    Get policy by ID: https://prisma.pan.dev/api/cloud/cspm/policy#operation/get-policy
+    """
+    headers = auth.get_auth_headers(token)
+    try:
+        if bc_proxy:
+            url = f"{base_url}/bridgecrew/api/v1/policies/{policy_id}"
+            response = requests.request("GET", url, headers=headers)
+            response.raise_for_status()
+            res_json = json.loads(response.text)
+            print(json.dumps(res_json, indent=4))
+        else:
+            url = f"{base_url}/policy/{policy_id}"
+            response = requests.request("GET", url, headers=headers)
+            response.raise_for_status()
+            res_json = json.loads(response.text)
+            print(json.dumps(res_json, indent=4))
+    except exceptions.SSLError:
+        print("SSL error occurred. Please disable VPN and try again.")
+    except Exception as e:
+        print(f"Error occurred while listing policies: {e}")
+
+
+def create_custom_policy(base_url, token, file_path, bc_proxy=False, verbose=False):
+    """
+    Creates a new build policy: https://prisma.pan.dev/api/cloud/cspm/policy#operation/add-policy
+    """
+    headers = auth.get_auth_headers(token, True)
     payload = get_policy_payload(file_path)
     try:
-        response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
-        res_json = json.loads(response.text)
-        print(json.dumps(res_json, indent=4))
-        response.raise_for_status()
-        print("Policy published successfully.")
+        if bc_proxy:
+            url = f"{base_url}/bridgecrew/api/v1/policies"
+            response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+            res_json = json.loads(response.text)
+            print(json.dumps(res_json, indent=4))
+            response.raise_for_status()
+            print("Policy published successfully.")
+        else:
+            url = f"{base_url}/policy"
+            response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+            res_json = json.loads(response.text)
+            print(json.dumps(res_json, indent=4))
+            response.raise_for_status()
+            print("Policy published successfully.")
     except exceptions.SSLError:
         print("SSL error occurred. Please disable VPN and try again.")
         sys.exit(1)
@@ -76,15 +122,12 @@ def create_custom_policy(base_url, token, file_path, verbose=False):
 
 def delete_custom_policy_by_id(base_url, token, policy_id, verbose=False):
     url = f"{base_url}/bridgecrew/api/v1/policies/{policy_id}"
-    headers = {
-        'Accept': 'application/json; charset=UTF-8',
-        'x-redlock-auth': token
-    }
+    headers = auth.get_auth_headers(token)
     try:
         response = requests.request("DELETE", url, headers=headers)
+        response.raise_for_status()
         res_json = json.loads(response.text)
         print(json.dumps(res_json, indent=4))
-        response.raise_for_status()
         print("Deleted successfully.")
     except exceptions.SSLError:
         print("SSL error occurred. Please disable VPN and try again.")
@@ -92,7 +135,7 @@ def delete_custom_policy_by_id(base_url, token, policy_id, verbose=False):
         print(f"Error occurred while listing policies: {e}")
 
 
-def update_custom_policy_by_id(base_url, token, policy_id, file_path, verbose=False):
+def update_custom_policy_by_id(base_url, token, policy_id, file_path, bc_proxy=False, verbose=False):
     url = f"{base_url}/bridgecrew/api/v1/policies/{policy_id}"
     headers = {
         'Accept': 'application/json; charset=UTF-8',
@@ -114,7 +157,7 @@ def update_custom_policy_by_id(base_url, token, policy_id, file_path, verbose=Fa
         sys.exit(1)
 
 
-def get_policy_payload(file_path):
+def get_policy_payload(file_path, bc_proxy=False):
     path = Path(file_path).resolve()
     try:
         with open(path, "r") as stream:
@@ -130,52 +173,42 @@ def get_policy_payload(file_path):
         print(f"Note: Found unnecessary attribute \"id: {policy_data['metadata']['id']}\" in policy. Ignoring it for "
               f"publishing.")
         policy_data["metadata"].pop("id", None)
-    return {"code": policy_data}
+    if bc_proxy:
+        return {"code": policy_data}
+    else:
+        # extra keys that cannot be parsed from a bc policy are:
+        #   1. complianceMetadata
+        #   2. labels
+        #   3. recommendation
+        #   4. enabled
+        payload = {
+            "cloudType": policy_data['scope']['provider'],
+            "complianceMetadata": [],
+            "description": policy_data['metadata']['guidelines'],
+            "labels": [],
+            "name": policy_data['metadata']['name'],
+            "policySubTypes": ["build"],
+            "policyType": "config",
+            "recommendation": "",
+            "rule": {
+                "children": [
+                    {
+                        "metadata": {
+                            "code": policy_data
+                        },
+                        "type": "build",
+                        "recommendation": ""
+                    }
+                ],
+                "name": policy_data['metadata']['name'],
+                "parameters": {
+                    "savedSearch": "false",
+                    "withIac": "true"
+                },
+                "type": "Config"
+            },
+            "severity": policy_data['metadata']['severity'],
+            "enabled": False
+        }
+        return payload
 
-
-def get_custom_policy_suppressions(base_url, token, verbose=False):
-    url = f"{base_url}/bridgecrew/api/v1/suppressions"
-    headers = {
-        'Accept': 'application/json; charset=UTF-8',
-        'x-redlock-auth': token
-    }
-    try:
-        response = requests.request("GET", url, headers=headers)
-        response.raise_for_status()
-        res_json = json.loads(response.text)
-        # filter out OOTB policies
-        bc_id_pattern = re.compile('^BC_')
-        custom_suppressions = []
-        for s in res_json:
-            if not bc_id_pattern.match(s.get('policyId')) and s.get('suppressionType') == 'Policy':
-                custom_suppressions.append(s)
-        print(json.dumps(custom_suppressions, indent=4))
-
-    except exceptions.SSLError:
-        print("SSL error occurred. Please disable VPN and try again.")
-    except Exception as e:
-        print(f"Error occurred while listing policies: {e}")
-
-
-def create_custom_policy_suppression(base_url, token, policy_id):
-    url = f"{base_url}/bridgecrew/api/v1/suppressions/{policy_id}"
-    headers = {
-        'Accept': 'application/json; charset=UTF-8',
-        'x-redlock-auth': token
-    }
-    try:
-        response = requests.request("POST", url, headers=headers)
-        response.raise_for_status()
-        res_json = json.loads(response.text)
-        # filter out OOTB policies
-        bc_id_pattern = re.compile('^BC_')
-        custom_suppressions = []
-        for s in res_json:
-            if not bc_id_pattern.match(s.get('policyId')) and s.get('suppressionType') == 'Policy':
-                custom_suppressions.append(s)
-        print(json.dumps(custom_suppressions, indent=4))
-
-    except exceptions.SSLError:
-        print("SSL error occurred. Please disable VPN and try again.")
-    except Exception as e:
-        print(f"Error occurred while listing policies: {e}")

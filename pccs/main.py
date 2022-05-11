@@ -2,8 +2,8 @@ import argparse
 import sys
 import os
 
-from common import auth
-from actions import policy_actions
+from pccs.common import auth, utils
+from pccs.actions import policy_actions, suppression_actions
 
 
 def run():
@@ -18,11 +18,18 @@ def run():
     parser.add_argument('--verbose', '-v', help='Print verbose response', required=False, action='store_true',
                         default=False)
     parser.add_argument('--policy-id', '-id', help='Get policy by ID', required=False)
-    parser.add_argument('--create-suppression', '-s', help='Suppress a custom policy. Use in conjunction with -id or -p or -u',
+    parser.add_argument('--create-suppression', '-s',
+                        help='Suppress a custom policy. Use in conjunction with -id or -p or -u',
                         required=False, action='store_true', default=False)
-    parser.add_argument('--list-suppressions', '-ls', help='List custom policy suppressions', action='store_true', default=False)
-    parser.add_argument('--delete-suppression', '-ds', help='Delete custom policy suppressions by suppression ID', action='store_true',
+    parser.add_argument('--list-suppressions', '-ls', help='List custom policy suppressions', action='store_true',
                         default=False)
+    parser.add_argument('--delete-suppression', '-ds', help='Delete custom policy suppressions by suppression ID',
+                        action='store_true',
+                        default=False)
+    parser.add_argument('--query', '-q', help='Query string format key1=value1,key2=value2', default='', required=False)
+    parser.add_argument('--bc-proxy', '-bc', help="Use Bridgecrew API proxy (not recommended)", action='store_true',
+                        default=False, required=False)
+    parser.add_argument('--version', action='version', version='2.0')
     args = parser.parse_args()
 
     base_url = os.getenv('PRISMA_API_URL', '')
@@ -40,23 +47,27 @@ def run():
     if not token:
         sys.exit(1)
 
-    if args.list:
-        policy_actions.get_custom_policies(base_url, token, args.verbose)
+    if args.query:
+        args.query = utils.parse_query_string(args.query)
 
-    if args.policy_id:
-        if args.update:
-            policy_actions.update_custom_policy_by_id(base_url, token, args.policy_id, args.update)
+    if args.list:
+        if args.policy_id:
+            policy_actions.get_custom_policy_by_id(base_url, token, args.policy_id, args.bc_proxy, args.verbose)
         else:
-            policy_actions.get_custom_policy_by_id(base_url, token, args.policy_id, args.verbose)
+            policy_actions.get_custom_policies(base_url, token, args.query, args.bc_proxy, args.verbose)
+
+    if args.update and args.policy_id:
+        policy_actions.update_custom_policy_by_id(base_url, token, args.policy_id, args.update)
 
     if args.publish:
-        policy_actions.create_custom_policy(base_url, token, file_path=args.publish)
+        policy_actions.create_custom_policy(base_url, token, args.publish, args.bc_proxy)
 
-    if args.delete:
-        policy_actions.delete_custom_policy_by_id(base_url, token, args.delete)
-
-    if args.list_suppressions:
-        policy_actions.get_custom_policy_suppressions(base_url, token, args.verbose)
+    # TODO:
+    # if args.delete:
+    #     policy_actions.delete_custom_policy_by_id(base_url, token, args.delete)
+    #
+    # if args.list_suppressions:
+    #     policy_actions.get_custom_policy_suppressions(base_url, token, args.verbose)
 
 
 if __name__ == '__main__':
