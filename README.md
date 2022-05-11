@@ -60,7 +60,7 @@ python -m pccs.main -id xxxxxxx --list
 
 The command below will create the policy present in the filepath supplied to the `--publish` argument
 ```commandline
-python -m pccs.main --p -f policies/azure/BC_AZ_C_001.yml
+python -m pccs.main -p -f policies/azure/BC_AZ_C_001.yml
 ```
 Output:
 ```commandline
