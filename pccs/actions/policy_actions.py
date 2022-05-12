@@ -210,7 +210,7 @@ def get_policy_payload(file_path, bc_proxy, status):
                 "children": [
                     {
                         "metadata": {
-                            "code": policy_data
+                            "code": yaml.dump(policy_data, sort_keys=False)
                         },
                         "type": "build",
                         "recommendation": ""
