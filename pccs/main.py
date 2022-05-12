@@ -76,7 +76,7 @@ def run():
     if args.enable or args.disable:
         if args.policy_id:
             policy_actions.update_policy_status(base_url, token, args.policy_id, status)
-        else:
+        elif not args.publish:
             print("ERROR: Missing required arguments: --policy-id/-id")
             sys.exit(1)
 
