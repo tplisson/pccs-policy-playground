@@ -90,12 +90,12 @@ def get_custom_policy_by_id(base_url, token, policy_id, bc_proxy=False):
         print(f"Error occurred while listing policies: {e}")
 
 
-def create_custom_policy(base_url, token, file_path, bc_proxy=False, status=False):
+def create_custom_policy(base_url, token, file_path, bc_proxy=False, status=False, labels=""):
     """
     Creates a new build policy: https://prisma.pan.dev/api/cloud/cspm/policy#operation/add-policy
     """
     headers = auth.get_auth_headers(token, True)
-    payload = get_policy_payload(file_path, bc_proxy, status)
+    payload = get_policy_payload(file_path, bc_proxy, status, labels)
     try:
         if bc_proxy:
             url = f"{base_url}/bridgecrew/api/v1/policies"
@@ -173,7 +173,9 @@ def update_custom_policy_by_id(base_url, token, policy_id, file_path, status, bc
         sys.exit(1)
 
 
-def get_policy_payload(file_path, bc_proxy, status):
+def get_policy_payload(file_path, bc_proxy, status, labels):
+    if labels:
+        labels = labels.split(',')
     path = Path(file_path).resolve()
     try:
         with open(path, "r") as stream:
@@ -201,7 +203,7 @@ def get_policy_payload(file_path, bc_proxy, status):
             "cloudType": policy_data['scope']['provider'],
             "complianceMetadata": [],
             "description": policy_data['metadata']['guidelines'],
-            "labels": [],
+            "labels": labels,
             "name": policy_data['metadata']['name'],
             "policySubTypes": ["build"],
             "policyType": "config",

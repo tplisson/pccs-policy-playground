@@ -34,6 +34,7 @@ def run():
     parser.add_argument('--enable', help="Enable policy", action='store_true', required=False, default=False)
     parser.add_argument('--disable', help="Disable policy", action='store_true', required=False, default=False)
     parser.add_argument('--version', action='version', version='2.0')
+    parser.add_argument('--labels', help="Comma separated list of labels", required=False, default="")
     args = parser.parse_args()
 
     base_url = os.getenv('PRISMA_API_URL', '')
@@ -68,7 +69,7 @@ def run():
 
     if args.publish:
         if args.file_path:
-            policy_actions.create_custom_policy(base_url, token, args.file_path, args.bc_proxy, status)
+            policy_actions.create_custom_policy(base_url, token, args.file_path, args.bc_proxy, status, args.labels)
         else:
             print("ERROR: Missing required arguments: --file-path/-f")
             sys.exit(1)
