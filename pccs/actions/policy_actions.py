@@ -176,6 +176,8 @@ def update_custom_policy_by_id(base_url, token, policy_id, file_path, status, bc
 def get_policy_payload(file_path, bc_proxy, status, labels):
     if labels:
         labels = labels.split(',')
+    else:
+        labels = []
     path = Path(file_path).resolve()
     try:
         with open(path, "r") as stream:
