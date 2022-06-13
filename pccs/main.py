@@ -35,11 +35,15 @@ def run():
     parser.add_argument('--disable', help="Disable policy", action='store_true', required=False, default=False)
     parser.add_argument('--version', action='version', version='2.0')
     parser.add_argument('--labels', help="Comma separated list of labels", required=False, default="")
+    parser.add_argument('--ca-cert', help="Certificate bundle", required=False, default="")
     args = parser.parse_args()
 
     base_url = os.getenv('PRISMA_API_URL', '')
     username = os.getenv('PC_ACCESS_KEY', '')
     password = os.getenv('PC_SECRET_KEY', '')
+
+    if args.ca_cert:
+        os.environ['REQUESTS_CA_BUNDLE'] =  args.ca_cert
 
     if args.auth:
         base_url, username, password = [i for i in args.auth.split("::")]
