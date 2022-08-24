@@ -1,6 +1,9 @@
 resource "azurerm_resource_group" "rg" {
   name     = "example-resources"
   location = "Canada Central"
+  tags = {
+    yor_trace = "fb7f4dba-5afe-4932-b217-1d5d93da3fa4"
+  }
 }
 
 # resource "azurerm_virtual_network" "vn1" {
@@ -50,6 +53,7 @@ resource "azurerm_virtual_network" "vn2" {
 
   tags = {
     environment = "Production"
+    yor_trace   = "3bd1391f-3cf4-4555-a901-b1cb080f5e50"
   }
 }
 
@@ -69,6 +73,9 @@ resource "azurerm_network_security_group" "nsg" {
     destination_port_range     = "*"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
+  }
+  tags = {
+    yor_trace = "91f8136a-73e4-4e37-9dd2-96bba7c84b0a"
   }
 }
 
