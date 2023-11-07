@@ -1,6 +1,9 @@
 resource "azurerm_resource_group" "example" {
   name     = "example-resources"
   location = "West Europe"
+  tags = {
+    yor_trace = "a75999cf-b902-40f8-b625-348cc8ba4791"
+  }
 }
 
 resource "azurerm_virtual_network" "example" {
@@ -8,6 +11,9 @@ resource "azurerm_virtual_network" "example" {
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
+  tags = {
+    yor_trace = "f487d9b8-5d14-4298-9bb1-fe352c4937c6"
+  }
 }
 
 resource "azurerm_subnet" "example" {
@@ -32,6 +38,9 @@ resource "azurerm_network_security_group" "example" {
     destination_port_range     = "*"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
+  }
+  tags = {
+    yor_trace = "c256940f-eb75-4626-8b6b-52b82b2e80ac"
   }
 }
 
